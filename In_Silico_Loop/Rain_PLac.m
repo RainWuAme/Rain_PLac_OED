@@ -6,13 +6,13 @@ true_par = [0.0164186333380725 0.291556643109224 1.71763487775568 ...
     0.00575139649497780 0.0216999999961899]; % The parameter vector is set
 % to the best estimates for MIP,r
 %% Rain181115 Off-line OED, sampling time: 2.5, 5, 7.5, 10
-Sampling_time_off_line = [2.5, 5, 7.5, 10];
+Sampling_time_off_line = [2.5, 5, 8, 10];
 tic
 % Sampling_time_off_line = [2.5 5];
 errOff = [];
 pOff = [];
-numLoops = 3;
-numExperiments = 1;
+numLoops = 1; % Subexperiment
+numExperiments = 3; % Do 3 times experiment
 resultBaseOff = cell(length(Sampling_time_off_line),1);
 parfor i = 1:length(Sampling_time_off_line)
     resultBaseOff{i} = strcat('RainOffSt',strrep(num2str(...
@@ -33,7 +33,7 @@ toc
 % Note that the code is only for numEcperiments = 3 and numLoops = 3. This
 % part should be modified
 tic
-Sampling_time_on_line = [2.5, 5, 7.5, 10];
+Sampling_time_on_line = [2.5, 5, 8, 10];
 errON = [];
 pOn = [];
 numLoops = 3;
