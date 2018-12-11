@@ -2,12 +2,13 @@
 %% Rain181120 Off-line OED, sampling time: 2.5, 5, 10
 clear all
 dbstop if error
-Sampling_time_off_line = [2.5, 5, 10];
+profile on
+Sampling_time_off_line = [5,6];
 % 1000/sampling_time and 300/sampling_time -> the result needs to be
 % integer.
 numLoops = 1; % Number of Sub-experiment. 1 means there is only one 
 % experiment. That means off-line OED.
-numExperiments = 4; % How many times of experiment
+numExperiments = 1; % How many times of experiment
 resultBaseOff = cell(length(Sampling_time_off_line),1); % Preallocation
 
 % File name input setting. The input will be, for example, RainOffSt2_5.
@@ -17,11 +18,13 @@ for i = 1:length(Sampling_time_off_line)
 end
 
 % OED
-for i = 1:length(Sampling_time_off_line)
-    run_in_silico_experiment_parfor_Optimised(resultBaseOff{i},numLoops,...
+parfor i = 1:length(Sampling_time_off_line)
+    run_in_silico_experiment_parfor_Optimised_light(resultBaseOff{i},numLoops,...
         numExperiments,Sampling_time_off_line(i));
 end
+p = profile('info');
 %% Rain181115 On-line OED, sampling time: 2.5, 5,  10
+%{
 clear all, close all, clc
 dbstop if error
 profile on
@@ -379,3 +382,34 @@ plot(t_plot,IPTG_plot,'Color',colormap(1,:),'LineWidth',2)
 ylim([-100 1200])
 ylabel('IPTG ($10^3\mu M$ )','Color',colormap(1,:),'Interpreter','Latex')
 title('OID result - sampling time 5, experiment 3, on-line')
+%}
+%% Test spmd
+clear all
+% dbstop if error
+profile on
+Sampling_time_off_line = 5;
+% 1000/sampling_time and 300/sampling_time -> the result needs to be
+% integer.
+numLoops = 1; % Number of Sub-experiment. 1 means there is only one 
+% experiment. That means off-line OED.
+numExperiments = 1; % How many times of experiment
+resultBaseOff = cell(length(Sampling_time_off_line),1); % Preallocation
+
+% File name input setting. The input will be, for example, RainOffSt2_5.
+for i = 1:length(Sampling_time_off_line)
+
+end
+
+% OED
+try
+    parpool(2)
+catch
+    disp('Parpool already on')
+end
+
+spmd
+    resultBaseOff = strcat('RainOffSt',strrep(num2str(Sampling_time_off_line),'.','_'),'Index',num2str(labindex));
+    run_in_silico_experiment_parfor_Optimised_light(char(resultBaseOff(labindex)),numLoops,numExperiments,Sampling_time_off_line);
+end
+
+p = profile('info');
