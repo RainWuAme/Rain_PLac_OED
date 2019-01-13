@@ -2,9 +2,9 @@
 % In silico experiment OID script - runs PE, OED, mock experiment
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [out]=fit_to_InduciblePromoter_Optimised_valuesOnly_eSS(...
+function [out]=Rain_fit_to_InduciblePromoter_Optimised_valuesOnly_eSS(...
     epccOutputResultFileNameBase,epccNumLoops,stepd,epcc_exps,...
-    global_theta_guess,sampleTime,numExperiments)
+    global_theta_guess,sampleTime)
 
 
 resultFileName = [strcat(epccOutputResultFileNameBase),'.dat'];
@@ -30,18 +30,9 @@ clear best_global_theta_log;
 clear pe_results;
 clear ode_results;
 
-% results_folder = strcat('InduciblePromoter',datestr(now,'yyyy-mm-dd-HHMMSS'));
-if numExperiments == 1
-    results_folder = strcat('RainInduciblePromoterOfflineSt',...
-        int2str(timeWindow),'_',datestr(now,'yyyy-mm-dd-HHMMSS'));
-    short_name = strcat('RainIndPromOff',int2str(timeWindow));
-else
-    results_folder = strcat('RainInduciblePromoterOnline',...
-        int2str(numExperiments),'St',int2str(timeWindow),'_',...
-        datestr(now,'yyyy-mm-dd-HHMMSS'));
-    short_name = strcat('RainIndPromOn',int2str(numExperiments),'St',...
-        int2str(timeWindow));
-end
+results_folder = strcat(resultFileName,datestr(now,'yyyy-mm-dd-HHMMSS'));
+% short_name = resultFileName;
+short_name = 'RainIndPro';
 
 % Read the model into the model variable
 InduciblePromoter_load_model;
@@ -158,30 +149,30 @@ for i=1:numLoops
     % SIMULATION
     inputs.ivpsol.ivpsolver='cvodes';                     % [] IVP solver: 'cvodes'(default, C)|'ode15s' (default, MATLAB, sbml)|'ode113'|'ode45'
     inputs.ivpsol.senssolver='cvodes';                    % [] Sensitivities solver: 'cvodes'(default, C)| 'sensmat'(matlab)|'fdsens2'|'fdsens5'
-%     inputs.ivpsol.rtol=1.0D-8;                            % [] IVP solver integration tolerances
-%     inputs.ivpsol.atol=1.0D-8;
+    inputs.ivpsol.rtol=1.0D-8;                            % [] IVP solver integration tolerances
+    inputs.ivpsol.atol=1.0D-8;
 %%
-    inputs.ivpsol.rtol=1D-0;                            % [] IVP solver integration tolerances
-    inputs.ivpsol.atol=1D-0;
+%     inputs.ivpsol.rtol=1D-0;                            % [] IVP solver integration tolerances
+%     inputs.ivpsol.atol=1D-0;
 %%
     
     % OPTIMIZATION
     %oidDuration=600;
     inputs.nlpsol.nlpsolver='eSS';
-%     inputs.nlpsol.eSS.maxeval = 5e4;
-%     inputs.nlpsol.eSS.maxtime = 30e3;
+    inputs.nlpsol.eSS.maxeval = 5e4;
+    inputs.nlpsol.eSS.maxtime = 30e3;
 %%
-    inputs.nlpsol.eSS.maxeval = 1e0;
-    inputs.nlpsol.eSS.maxtime = 0.1e0;
+%     inputs.nlpsol.eSS.maxeval = 1e0;
+%     inputs.nlpsol.eSS.maxtime = 0.1e0;
 %%
     inputs.nlpsol.eSS.local.solver = 'fminsearch';
     inputs.nlpsol.eSS.local.finish = 'fmincon';
     
-%     inputs.nlpsol.eSS.local.nl2sol.maxiter  =     500;     % max number of iteration
-%     inputs.nlpsol.eSS.local.nl2sol.maxfeval =     500;     % max number of function evaluation
+    inputs.nlpsol.eSS.local.nl2sol.maxiter  =     500;     % max number of iteration
+    inputs.nlpsol.eSS.local.nl2sol.maxfeval =     500;     % max number of function evaluation
 %%
-    inputs.nlpsol.eSS.local.nl2sol.maxiter  =     2;     % max number of iteration
-    inputs.nlpsol.eSS.local.nl2sol.maxfeval =     2;     % max number of function evaluation
+%     inputs.nlpsol.eSS.local.nl2sol.maxiter  =     2;     % max number of iteration
+%     inputs.nlpsol.eSS.local.nl2sol.maxfeval =     2;     % max number of function evaluation
 %%
     inputs.nlpsol.eSS.log_var=1:inputs.exps.n_steps{iexp};
     inputs.plotd.plotlevel='noplot';
@@ -290,20 +281,20 @@ for i=1:numLoops
     % SIMULATION
     inputs.ivpsol.ivpsolver='cvodes';
     inputs.ivpsol.senssolver='cvodes';
-%     inputs.ivpsol.rtol=1.0D-7;
-%     inputs.ivpsol.atol=1.0D-7;
+    inputs.ivpsol.rtol=1.0D-7;
+    inputs.ivpsol.atol=1.0D-7;
 %%
-    inputs.ivpsol.rtol=1.0D-1;
-    inputs.ivpsol.atol=1.0D-1;
+%     inputs.ivpsol.rtol=1.0D-1;
+%     inputs.ivpsol.atol=1.0D-1;
 %% 
     
     % OPTIMIZATION
     inputs.nlpsol.nlpsolver='eSS';
-%     inputs.nlpsol.eSS.maxeval = 200000;
-%     inputs.nlpsol.eSS.maxtime = 5000;
+    inputs.nlpsol.eSS.maxeval = 200000;
+    inputs.nlpsol.eSS.maxtime = 5000;
 %%
-    inputs.nlpsol.eSS.maxeval = 2;
-    inputs.nlpsol.eSS.maxtime = 5;
+%     inputs.nlpsol.eSS.maxeval = 2;
+%     inputs.nlpsol.eSS.maxtime = 5;
 %%
     inputs.nlpsol.eSS.local.solver = 'lsqnonlin';  % nl2sol not yet installed on my mac
     inputs.nlpsol.eSS.local.finish = 'lsqnonlin';  % nl2sol not yet installed on my mac
@@ -443,12 +434,18 @@ for i=1:10
     
 end
 
+
 true_param_values = model.par(param_including_vector);
+%}
+
+% save([strcat(epccOutputResultFileNameBase),'.mat'], 'pe_inputs',...
+%     'pe_results','pe_results2','oed_results','exps','inputs',...
+%     'true_param_values','best_global_theta','best_global_theta_log');
+
 
 save([strcat(epccOutputResultFileNameBase),'.mat'], 'pe_inputs',...
-    'pe_results','pe_results2','oed_results','exps','inputs',...
-    'true_param_values','best_global_theta','best_global_theta_log');
+    'pe_results','oed_results','exps','inputs','best_global_theta');
 
 out= 1;
-%}
+
 end

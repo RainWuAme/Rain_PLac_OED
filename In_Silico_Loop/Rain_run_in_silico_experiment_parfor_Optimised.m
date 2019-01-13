@@ -1,9 +1,9 @@
-function [] = run_in_silico_experiment_parfor_Optimised( resultBase, numLoops, numExperiments, SampleTime )
+function [] = Rain_run_in_silico_experiment_parfor_Optimised( resultBase, numLoops, numExperiments, SampleTime, StepNum )
 
-cd ('../../');
+% cd ('../../');
 AMIGO_Startup();
 
-cd ('Examples/In_Silico_Loop');
+% cd ('Examples/In_Silico_Loop');
 
 % Selected boundaries for the parameters
 theta_min = [3.88e-5,3.88e-2,0.5,2,7.7e-3,0.2433,5.98e-5,0.012];
@@ -26,14 +26,14 @@ theta_max = [0.4950,0.4950,4.9,10,0.23,6.8067,0.2449,0.0217];
 load('MatrixParameters_InputComparison.mat');   
 
 for epcc_exps=1:numExperiments
-        stepd = 200;
+        stepd = 3000/StepNum;
         epccNumLoops = numLoops;
         %try
             global_theta_guess = ParFull(epcc_exps,:);
-            epccOutputResultFileNameBase = [resultBase,'-','OptstepseSS-',num2str(numLoops),'_loops-',num2str(epcc_exps)];
-            [out]=fit_to_InduciblePromoter_Optimised_valuesOnly_eSS(...
+            epccOutputResultFileNameBase = resultBase;
+            [out]=Rain_fit_to_InduciblePromoter_Optimised_valuesOnly_eSS(...
                 epccOutputResultFileNameBase,epccNumLoops,stepd,...
-                epcc_exps,global_theta_guess,SampleTime,numExperiments);
+                epcc_exps,global_theta_guess,SampleTime);
 
 %         catch err
 %             %open file
