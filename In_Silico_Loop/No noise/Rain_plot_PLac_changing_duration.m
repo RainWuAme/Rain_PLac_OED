@@ -148,3 +148,31 @@ for i = 1:length(numLoops)
         end
     end
 end
+%% Rain190218 Residual plot of the no noise experiment
+% Rain_Step40_SubExp4_Exp50.mat is the experiment without noise
+load('Rain_Step40_SubExp4_Exp50.mat')
+true_par = [0.0164186333380725 0.291556643109224 1.71763487775568 ...
+    5.14394334860864 0.229999999999978 6.63776658557266...
+    0.00575139649497780 0.0216999999961899];
+[colormap] = cbrewer('qual','Set1',3);
+subplot(2,1,1)
+bar(best_global_theta'-true_par, 'FaceColor', colormap(2,:));
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(gca,'xticklabel',{'$\alpha_1$','$Vm_1$','$h_1$','$Km_1$','$d_1$','$\alpha_2$',...
+    '$d_2$','$Kf$'})
+ylabel('Residual','Interpreter','Latex')
+title('No noise','Interpreter','Latex')
+
+% Rain_Step40_SubExp4_Exp30.mat is the experiment with noise of std = 0.05;
+subplot(2,1,2)
+load('Rain_Step40_SubExp4_Exp30.mat')
+bar(best_global_theta'-true_par, 'FaceColor', colormap(2,:));
+set(groot, 'defaultAxesTickLabelInterpreter','latex')
+set(gca,'xticklabel',{'$\alpha_1$','$Vm_1$','$h_1$','$Km_1$','$d_1$','$\alpha_2$',...
+    '$d_2$','$Kf$'})
+ylabel('Residual','Interpreter','Latex')
+title('Noise with std dev $0.05$','Interpreter','Latex')
+
+% The parameter residuals of the no noise experiment are almost zero
+% compare the noisy one.
+

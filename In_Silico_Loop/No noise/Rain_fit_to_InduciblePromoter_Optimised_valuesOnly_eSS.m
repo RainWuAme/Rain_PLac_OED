@@ -105,6 +105,7 @@ for i=1:numLoops
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Optimal experiment design
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     clear inputs;
     inputs.model = NewInduciblePromoter_load_model();
     inputs.exps  = exps;
@@ -141,37 +142,38 @@ for i=1:numLoops
     
     
     inputs.exps.noise_type='homo_var';           % Experimental noise type: Homoscedastic: 'homo'|'homo_var'(default)
-    inputs.exps.std_dev{iexp}=[0.05];
+%     inputs.exps.std_dev{iexp}=[0.05];
+    inputs.exps.std_dev{iexp}=[0];
     inputs.OEDsol.OEDcost_type='Dopt';
     
     
     % SIMULATION
     inputs.ivpsol.ivpsolver='cvodes';                     % [] IVP solver: 'cvodes'(default, C)|'ode15s' (default, MATLAB, sbml)|'ode113'|'ode45'
     inputs.ivpsol.senssolver='cvodes';                    % [] Sensitivities solver: 'cvodes'(default, C)| 'sensmat'(matlab)|'fdsens2'|'fdsens5'
-%     inputs.ivpsol.rtol=1.0D-8;                            % [] IVP solver integration tolerances
-%     inputs.ivpsol.atol=1.0D-8;
+    inputs.ivpsol.rtol=1.0D-8;                            % [] IVP solver integration tolerances
+    inputs.ivpsol.atol=1.0D-8;
 %%
-    inputs.ivpsol.rtol=1D-0;                            % [] IVP solver integration tolerances
-    inputs.ivpsol.atol=1D-0;
+%     inputs.ivpsol.rtol=1D-0;                            % [] IVP solver integration tolerances
+%     inputs.ivpsol.atol=1D-0;
 %%
     
     % OPTIMIZATION
     %oidDuration=600;
     inputs.nlpsol.nlpsolver='eSS';
-%     inputs.nlpsol.eSS.maxeval = 5e4;
-%     inputs.nlpsol.eSS.maxtime = 30e3;
+    inputs.nlpsol.eSS.maxeval = 5e4;
+    inputs.nlpsol.eSS.maxtime = 30e3;
 %%
-    inputs.nlpsol.eSS.maxeval = 1e0;
-    inputs.nlpsol.eSS.maxtime = 0.1e0;
+%     inputs.nlpsol.eSS.maxeval = 1e0;
+%     inputs.nlpsol.eSS.maxtime = 0.1e0;
 %%
     inputs.nlpsol.eSS.local.solver = 'fminsearch';
     inputs.nlpsol.eSS.local.finish = 'fmincon';
     
-%     inputs.nlpsol.eSS.local.nl2sol.maxiter  =     500;     % max number of iteration
-%     inputs.nlpsol.eSS.local.nl2sol.maxfeval =     500;     % max number of function evaluation
+    inputs.nlpsol.eSS.local.nl2sol.maxiter  =     500;     % max number of iteration
+    inputs.nlpsol.eSS.local.nl2sol.maxfeval =     500;     % max number of function evaluation
 %%
-    inputs.nlpsol.eSS.local.nl2sol.maxiter  =     2;     % max number of iteration
-    inputs.nlpsol.eSS.local.nl2sol.maxfeval =     2;     % max number of function evaluation
+%     inputs.nlpsol.eSS.local.nl2sol.maxiter  =     2;     % max number of iteration
+%     inputs.nlpsol.eSS.local.nl2sol.maxfeval =     2;     % max number of function evaluation
 %%
     inputs.nlpsol.eSS.log_var=1:inputs.exps.n_steps{iexp};
     inputs.plotd.plotlevel='noplot';
@@ -280,20 +282,20 @@ for i=1:numLoops
     % SIMULATION
     inputs.ivpsol.ivpsolver='cvodes';
     inputs.ivpsol.senssolver='cvodes';
-%     inputs.ivpsol.rtol=1.0D-7;
-%     inputs.ivpsol.atol=1.0D-7;
+    inputs.ivpsol.rtol=1.0D-7;
+    inputs.ivpsol.atol=1.0D-7;
 %%
-    inputs.ivpsol.rtol=1.0D-1;
-    inputs.ivpsol.atol=1.0D-1;
+%     inputs.ivpsol.rtol=1.0D-1;
+%     inputs.ivpsol.atol=1.0D-1;
 %% 
     
     % OPTIMIZATION
     inputs.nlpsol.nlpsolver='eSS';
-%     inputs.nlpsol.eSS.maxeval = 200000;
-%     inputs.nlpsol.eSS.maxtime = 5000;
+    inputs.nlpsol.eSS.maxeval = 200000;
+    inputs.nlpsol.eSS.maxtime = 5000;
 %%
-    inputs.nlpsol.eSS.maxeval = 2;
-    inputs.nlpsol.eSS.maxtime = 5;
+%     inputs.nlpsol.eSS.maxeval = 2;
+%     inputs.nlpsol.eSS.maxtime = 5;
 %%
     inputs.nlpsol.eSS.local.solver = 'lsqnonlin';  % nl2sol not yet installed on my mac
     inputs.nlpsol.eSS.local.finish = 'lsqnonlin';  % nl2sol not yet installed on my mac
