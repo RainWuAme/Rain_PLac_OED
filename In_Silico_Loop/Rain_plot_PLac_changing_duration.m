@@ -16,6 +16,11 @@ SubExp = {};
 % Load data, SubExp -> row: numLoops, column: index of experiments
 % par is 3 dimentional matrix -> row: numLoops, column: best theta, z: 30 times
 % experiment
+SubExpTimeLength = 3000./numLoops;
+SubExpTime = {};
+for i = 1:length(SubExpTimeLength)
+    SubExpTime{i} = 0:SubExpTimeLength(i):3000;
+end
 for i = 1:length(numLoops)
     for j = 1:numExperiments
         SubExp{i,j} = load(strcat('Rain_Step', int2str(step_num),...
@@ -132,11 +137,12 @@ end
 cb = cbrewer('qual', 'Dark2', 30);
 index = 1;
 par_name = {'alpha1', 'Vm1', 'h1', 'Km1', 'd1', 'alpha2', 'd2', 'Kf'};
+% SubExpTime;
 for i = 1:length(numLoops)
     for k = 1:length(true_par)
         figure
         for j = 1:numExperiments
-            h = plot(SubExp{i,j}.pe_results{1,1}.nlpsol.time, SubExp{i,j}...
+            h = plot(SubExp{i,j}.pe_results{1,i}.nlpsol.time, SubExp{i,j}...
                 .pe_results{1,1}.nlpsol.bestit(:,k));
             set(h, {'color'}, {cb(j,:)})
             hold on
@@ -145,6 +151,49 @@ for i = 1:length(numLoops)
                 '--k','LineWidth',1.5);
             title(strcat(int2str(numLoops(i)), ' SubExp,', {' '}, par_name{k}))
             xlabel('Time')
+        end
+%         plot([SubExpTime{i}' SubExpTime{i}'],get(axes,'YLim'),'Color',[0,0,0])
+    end
+end
+%% Rain190219 single parameter plot - modified
+close all
+cb = cbrewer('qual', 'Dark2', 30);
+index = 1;
+par_name = {'$\alpha_1$', '$Vm_1$', '$h_1$', '$Km_1$', '$d_1$',...
+    '$\alpha_2$', '$d_2$', '$Kf$'};
+max_y = [];
+min_y = [];
+% SubExpTime;
+for i = 1:length(numLoops)
+    for k = 1:length(true_par) % test
+        figure
+        for j = 1:numExperiments % test
+            for m = 1:numLoops(i)
+                if m == 1
+                    t = SubExp{i,j}.pe_results{1,m}.nlpsol.time;
+                    t_end = t(end);
+                else
+                    t = SubExp{i,j}.pe_results{1,m}.nlpsol.time+t_end;
+                    t_end = t(end);
+                end
+                y = SubExp{i,j}.pe_results{1,m}.nlpsol.bestit(:,k);
+                max_y = max([max_y, y']);
+                min_y = min([min_y, y']);
+%                 plot([t_end t_end], [true_par(k)-0.1 100], '-.',...
+%                     'LineWidth',0.5,'Color',cb(j,:))
+                hold on
+                h = plot(t,y,'LineWidth',1);
+                set(h, {'color'}, {cb(j,:)})
+            end
+            plot([0, t(end)],...
+                [true_par(k)',true_par(k)'],...
+                '--k','LineWidth',1.5);
+            title(strcat(int2str(numLoops(i)), ' SubExp,', {' '},...
+                par_name{k}),'Interpreter','Latex')
+            xlabel('Time','Interpreter','Latex')
+            ylim([min_y-abs(min_y) max_y+0.1*abs(max_y)])
+            max_y = [];
+            min_y = [];
         end
     end
 end

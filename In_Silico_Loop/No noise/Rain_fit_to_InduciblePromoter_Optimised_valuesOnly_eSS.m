@@ -230,7 +230,6 @@ for i=1:numLoops
     inputs.exps.data_type='pseudo';
     inputs.exps.noise_type='homo_var';
     inputs.exps.std_dev{1}=[0.05];
-    
     inputs.plotd.plotlevel='noplot';
     
     inputs.pathd.results_folder = results_folder;
